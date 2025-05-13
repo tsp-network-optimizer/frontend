@@ -1,0 +1,88 @@
+/* Modernización general */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f7fa;
+}
+
+header {
+  background-color: #003366;
+  color: white;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 50px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  flex-grow: 1;
+}
+
+/* para el campo completo del input (incluyendo el "ningun archivo seleccionado") */
+header input[type="file"] {
+  color: white;
+  background-color: #004080;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* solo para el boton del input como tal */
+header input[type="file"]::file-selector-button {
+  background-color: #0055aa;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* botones  */
+.buttons {
+  display: flex;
+  gap: 15px; 
+}
+
+
+.buttons button {
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #0055aa, #0077cc);
+  color: white;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.5s ease, transform 0.2s ease;
+}
+
+.buttons button:hover {
+  background: linear-gradient(135deg, #004a99, #006bb3);
+  transform: translateY(-2px);
+}
+
+.buttons button:active {
+    /* para cuando se presiona, sensación de que se hace más pequeño */
+  transform: scale(0.98);
+}
+
+
+main {
+  display: flex;
+  /* para que ocupe todo el tamaño de alto menos el espacio del header */
+  height: calc(100vh - 70px);
+}
+
+#map {
+  flex: 3;
+}
+
+#infoPanel {
+  flex: 1;
+  background-color: white;
+  padding: 20px;
+  border-left: 1px solid #ddd;
+}

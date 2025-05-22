@@ -76,6 +76,12 @@ function drawGraph(graph) {
     window.graphLayers.push(marker);
   });
 
+  // Guardar coordenadas por ID para trazar rutas luego
+  window.graphNodeCoords = {};
+  graph.nodes.forEach(node => {
+    window.graphNodeCoords[node.id] = [node.lat, node.lon];
+  });
+
   // Pintar aristas
   graph.edges.forEach(edge => {
     const nodeA = graph.nodes.find(n => n.id === edge.from);
@@ -89,6 +95,7 @@ function drawGraph(graph) {
     }
   });
 }
+
 
 //se dispara cuando se sube un archivo al archivo de nodos a visitar
 document.getElementById("pointsFileInput").addEventListener("change", function () {
@@ -157,15 +164,17 @@ function renderTSPResult(result) {
     <h4>${result.algorithmName}</h4>
     <p class="stat-line"><strong>Distancia:</strong> ${result.total_cost.toFixed(2)} metros</p>
     <p class="stat-line"><strong>Tiempo:</strong> ${result.execution_time.toFixed(4)} s</p>
-    <p class="stat-line"><strong>Ruta:</strong> ${result.path.join(" → ")}</p>
+    <p class="stat-line"><strong>Nodos recorridos:</strong> ${result.path.join(", ")}</p>
   `;
+      // <p class="stat-line"><strong>Ruta completa:</strong> ${fullPath.join(" → ")}</p>
+
 
   container.appendChild(card);
 }
 
 // función para pintar los nodos del TSP en color naranja (para diferencias los que se tienen que visitar)
 function drawTSPPoints(nodeIds, allGraphNodes) {
-  // Borrar puntos TSP anteriores
+  // Borrar puntos TSP anteriores (las naranjas anteriores)
   window.tspPointLayers.forEach(layer => layer.remove());
   window.tspPointLayers = [];
 
@@ -181,4 +190,72 @@ function drawTSPPoints(nodeIds, allGraphNodes) {
       window.tspPointLayers.push(circle);
     }
   });
+}
+
+
+// Dibuja una ruta completa (nodos intermedios incluidos)
+function drawFullRoute(nodeIds, color = "red") {
+  if (!Array.isArray(nodeIds) || nodeIds.length < 2) {
+    console.warn("Ruta no válida para dibujar");
+    return;
+  }
+
+  if (!window.routeLayers) window.routeLayers = [];
+
+  // Borrar rutas anteriores
+  window.routeLayers.forEach(layer => map.removeLayer(layer));
+  window.routeLayers = [];
+
+  for (let i = 0; i < nodeIds.length - 1; i++) {
+    const from = window.graphNodeCoords[nodeIds[i]];
+    const to = window.graphNodeCoords[nodeIds[i + 1]];
+    if (!from || !to) continue;
+
+    const polyline = L.polyline([from, to], {
+      color: color,
+      weight: 4,
+      opacity: 0.9
+    }).addTo(map);
+
+    window.routeLayers.push(polyline);
+  }
+}
+
+
+
+document.getElementById("btnDynamic").addEventListener("click", async () => {
+  try {
+    showLoading("Ejecutando algoritmo Held-Karp...");
+
+    const response = await fetch("http://localhost:8000/tsp/dynamic");
+    if (!response.ok) throw new Error("Error ejecutando Held-Karp");
+
+    const data = await response.json();
+
+    const tspResult = data.result;
+    const fullPath = data.fullPath;
+
+    renderTSPResult(tspResult);
+    drawFullRoute(fullPath, "red");
+
+  } catch (err) {
+    console.error(err);
+    alert("Error al ejecutar el algoritmo Held-Karp");
+  } finally {
+    hideLoading();
+  }
+});
+
+
+
+
+
+function showLoading(text) {
+  document.getElementById("loadingSpinner").style.display = "inline-block";
+  document.getElementById("loadingText").textContent = text || "Procesando...";
+}
+
+function hideLoading() {
+  document.getElementById("loadingSpinner").style.display = "none";
+  document.getElementById("loadingText").textContent = "";
 }

@@ -246,6 +246,30 @@ document.getElementById("btnDynamic").addEventListener("click", async () => {
   }
 });
 
+//fuerza bruta
+document.getElementById("btnBruteForce").addEventListener("click", async () => {
+  try {
+    showLoading("Ejecutando fuerza bruta...");
+
+    const response = await fetch("http://localhost:8000/tsp/brute-force");
+    if (!response.ok) throw new Error("Error ejecutando fuerza bruta");
+
+    const data = await response.json();
+
+    const tspResult = data.result;
+    const fullPath = data.fullPath;
+    // agrega nueva tarjeta de estadísticas
+    renderTSPResult(tspResult, fullPath);   
+    drawFullRoute(fullPath, "purple");     
+
+  } catch (err) {
+    console.error(err);
+    alert("Error al ejecutar el algoritmo de fuerza bruta");
+  } finally {
+    hideLoading();
+  }
+});
+
 
 
 

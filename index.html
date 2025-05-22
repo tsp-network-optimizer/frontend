@@ -25,11 +25,19 @@
   <main>
     <div id="map"></div>
     <aside id="infoPanel">
-      <h2>Información</h2>
-      <h4>Acá iran las estadísticas. Ej:</h4>
-      <p id="routeDistance">Distancia: -</p>
-      <p id="executionTime">Tiempo: -</p>
+      <h2>Estadísticas</h2>
+      <div id="statsContainer">
+        <!-- Aquí se irán agregando las tarjetas de resultados -->
+      </div>
+
+      <hr />
+      <!-- mensaje de carga de matriz -->
+      <p id="loadingMessage" style="color: #004080; font-weight: bold;"></p>
+
+      <label for="pointsFileInput"><strong>Subir puntos (.txt):</strong></label>
+      <input type="file" id="pointsFileInput" accept=".txt" />
     </aside>
+
   </main>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>

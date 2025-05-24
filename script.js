@@ -270,6 +270,30 @@ document.getElementById("btnBruteForce").addEventListener("click", async () => {
   }
 });
 
+// algoritmo greedy
+document.getElementById("btnGreedy").addEventListener("click", async () => {
+  try {
+    showLoading("Ejecutando algoritmo greedy...");
+
+    const response = await fetch("http://localhost:8000/tsp/greedy");
+    if (!response.ok) throw new Error("Error ejecutando algoritmo greedy");
+
+    const data = await response.json();
+
+    const tspResult = data.result;
+    const fullPath = data.fullPath;
+
+    renderTSPResult(tspResult);
+    drawFullRoute(fullPath, "green");
+
+  } catch (err) {
+    console.error(err);
+    alert("Error al ejecutar el algoritmo greedy");
+  } finally {
+    hideLoading();
+  }
+});
+
 
 
 
